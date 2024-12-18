@@ -10,6 +10,11 @@
  新增功能：確認新增套票後，資料即時更新並顯示在頁面上。
  表單驗證：確認未填寫欄位時顯示錯誤提示，填寫後提示消失。
 
+ Mentor Feedback: 嘗試改為透過 reset() 方法清空表單資料，就不用逐一清除表單內容。
+ 
+ 1、使用 reset() 清空表單： 簡化清空表單欄位的邏輯，減少程式碼重複性
+ 2、錯誤提示清空：在清空表單時，同步清空所有欄位的錯誤提示，避免殘留錯誤訊息。
+
 */
 
 let data = [];
@@ -18,10 +23,11 @@ let data = [];
 const apiUrl = 'https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json';
 
 // 選取 DOM 元素
-const ticketCard = document.querySelector(".ticketCard-area");
-const searchResultNum = document.querySelector(".searchResultNum");
-const filter = document.querySelector(".regionSearch");
-const btn = document.querySelector(".btn");
+const ticketCard = document.querySelector(".ticketCard-area"); // 套票卡片區域
+const searchResultNum = document.querySelector(".searchResultNum");// 搜尋結果數量
+const filter = document.querySelector(".regionSearch");// 篩選器
+const btn = document.querySelector(".btn");// 新增按鈕
+const addTicketForm = document.querySelector(".addTicket-form"); // 表單元素
 
 // 表單欄位
 const formFields = {
@@ -136,12 +142,6 @@ function validateForm() {
   return isValid; // 回傳表單是否有效
 }
 
-// 清空表單
-function resetForm() {
-  Object.keys(formFields).forEach((field) => {
-    formFields[field].value = ""; // 清空每個表單欄位
-  });
-}
 
 // 新增套票邏輯
 btn.addEventListener("click", function () {
@@ -167,8 +167,13 @@ btn.addEventListener("click", function () {
   // 更新畫面
   init();
 
-  // 清空表單
-  resetForm();
+  // 清空表單 (使用 reset 方法)
+  addTicketForm.reset();
+
+  // 清空錯誤提示
+  Object.keys(errorMessages).forEach((field) => {
+    errorMessages[field].innerHTML = ""; // 清空錯誤訊息
+  });
 
   alert("新增套票成功！");
 });
